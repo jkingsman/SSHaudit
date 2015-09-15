@@ -21,7 +21,8 @@ program
   .parse(process.argv);
 
 if (!program.token) {
-  console.log("User token is required! Generate one at https://github.com/settings/tokens/new. See 'node index.js --help' for more information.");
+  console.log("User token with write:org rights is required! Generate one at https://github.com/settings/tokens/new");
+  console.log("See 'node index.js --help' for more information.");
   process.exit(1);
 }
 
@@ -102,7 +103,7 @@ function addKeys(callback) {
           keyTypes.push(gitKey.getKeyType());
 
           // don't run the key length if it's not RSA or DSA
-          if(gitKey.getKeyType() == "ssh-rsa" || gitKey.getKeyType() == "ssh-dsa" || gitKey.getKeyType() == "ssh-dss"){
+          if (gitKey.getKeyType() == "ssh-rsa" || gitKey.getKeyType() == "ssh-dsa" || gitKey.getKeyType() == "ssh-dss") {
             if (gitKey.getKeyLength() <= program.size) {
               keyBits.push(chalk.bgRed.bold(gitKey.getKeyLength()));
             } else {
