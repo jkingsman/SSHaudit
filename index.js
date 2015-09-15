@@ -92,7 +92,7 @@ function printList() {
     for (var user in userList) {
         if (userList.hasOwnProperty(user)) {
             table.push([user, userList[user].url, userList[user].keyCount,
-                userList[user].keyTypes, userList[user].keyBits
+                userList[user].keyTypes.join(', '), userList[user].keyBits.join(', ')
             ]);
         }
     }
