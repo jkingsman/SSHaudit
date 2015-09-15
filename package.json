@@ -1,5 +1,5 @@
 {
-  "name": "shaudit",
+  "name": "SSHaudit",
   "version": "0.1.0",
   "description": "Audit the keys of users in your organization.",
   "main": "index.js",
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/jkingsman/shaudit"
+    "url": "https://github.com/jkingsman/SSHaudit"
   },
   "keywords": [
     "github",
@@ -19,9 +19,9 @@
   "author": "Jack Kingsman <jack.kingsman@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/jkingsman/shaudit/issues"
+    "url": "https://github.com/jkingsman/SSHaudit/issues"
   },
-  "homepage": "https://github.com/jkingsman/shaudit",
+  "homepage": "https://github.com/jkingsman/SSHaudit",
   "dependencies": {
     "chalk": "^1.1.1",
     "cli-table": "^0.3.1",
