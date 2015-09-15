@@ -28,13 +28,15 @@ npm install
 ## Usage
 
 ```bash
-node index.js -t <GitHub personal token> -o <organization name> [-s keysize]
+node index.js -t <GitHub personal token> -o <organization name> [-s keysize] [-e]
 ```
 The GitHub personal token can be generated [here](https://github.com/settings/tokens/new); it requires only the `write:org` permissions.
 
 Omitting the organization name will list all organizations you're a member of.
 
 The `-s` flag allows you to specify which keysize in bits (and smaller) you would like to have flagged for your attention. Defaults to 1024.
+
+Setting the `-e` flag will highlight users who do not have an elliptic curve key installed
 
 ## License
 
