@@ -67,7 +67,7 @@ if (!program.organization) {
 function printList() {
   var table = new Table({
     head: ['Username', 'Url', 'Count', 'Type(s)', 'Size(s)'],
-    colWidths: [30, 50, 10, 20, 20]
+    colWidths: [30, 50, 10, 30, 20]
   });
 
   for (var user in userList) {
@@ -99,13 +99,18 @@ function addKeys(callback) {
 
           var gitKey = new opensshparser(keylist[i].key);
 
-          if (gitKey.getKeyLength() <= program.size) {
-            keyBits.push(chalk.bgRed.bold(gitKey.getKeyLength()));
-          } else {
-            keyBits.push(gitKey.getKeyLength());
+          keyTypes.push(gitKey.getKeyType());
+
+          // don't run the key length if it's not RSA or DSA
+          if(gitKey.getKeyType() == "ssh-rsa" || gitKey.getKeyType() == "ssh-dsa" || gitKey.getKeyType() == "ssh-dss"){
+            if (gitKey.getKeyLength() <= program.size) {
+              keyBits.push(chalk.bgRed.bold(gitKey.getKeyLength()));
+            } else {
+              keyBits.push(gitKey.getKeyLength());
+            }
           }
 
-          keyTypes.push(gitKey.getKeyType());
+
         }
 
         if (keyCount == 0) {
