@@ -36,6 +36,10 @@ if (!program.token) {
     process.exit(1);
 }
 
+/**
+ * Prints an error if one occured and closes the program
+ * @param {json} err - JSON object containing error details
+ */
 function handleErrorIfOccurs(err) {
     if (err) {
         console.log('Error!');
@@ -75,6 +79,9 @@ if (!program.organization) {
     buildUserList(false, null, addKeys, printList);
 }
 
+/**
+ * Prints the user list in table form
+ */
 function printList() {
     var colWidths, table;
 
@@ -100,6 +107,10 @@ function printList() {
     console.log(table.toString());
 }
 
+/**
+ * Adds keys to an existing user list
+ * @param {requestCallback} callback - callback to handle the completely built list
+ */
 function addKeys(callback) {
     var userUpdatesInProgress = Object.keys(userList).length;
 
@@ -172,6 +183,9 @@ function addKeys(callback) {
     }
 }
 
+/**
+ * Prints a list of organizations the token owner is a part of
+ */
 function listOrgs() {
     github.user.getOrgs({
         user: githubUser
@@ -187,6 +201,13 @@ function listOrgs() {
     });
 }
 
+/**
+ * Adds keys to an existing user list
+ * @param {json|Null} error - JSON object containing error details, or null if there are none
+ * @param {json} resultsPage - JSON object containing a page of results form the user query
+ * @param {requestCallback} callback - callback to handle the user list
+ * @param {requestCallback} callback2 - callback passed to 'callback' as the sole parameter
+ */
 function buildUserList(error, resultsPage, callback, callback2) {
     handleErrorIfOccurs(error);
 
