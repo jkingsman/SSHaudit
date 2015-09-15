@@ -11,13 +11,15 @@ var program = require('commander'),
   opensshparser = require('openssh-rsa-dsa-parse');
 
 var githubUser, userList = [],
-  userListWithKeys = [];
+  userListWithKeys = [],
+  ellipticKeyTypes = ['ssh-ed25519', 'ecdsa-sha2-nistp256', 'ecdsa-sha2-nistp384', 'ecdsa-sha2-nistp521'];
 
 program
   .version('0.1.0')
   .option('-t, --token [token]', 'Your user token (required)')
   .option('-o, --organization [org name]', 'Your organization name (omit to see a list of organizations you have membership in)')
-  .option('-s, --size [keysize]', 'Keys smaller than this keysize in bits will be flagged (default = 1024)', 1024)
+  .option('-s, --size [keysize]', 'Keys smaller than this keysize in bits will be flagged (default = 1024; elliptic keys will not have their lengths displayed irrespective of this setting)', 1024)
+  .option('-e, --elliptic', 'Flag users lacking elliptic keys (no flagging by default)')
   .parse(process.argv);
 
 if (!program.token) {
@@ -66,9 +68,17 @@ if (!program.organization) {
 }
 
 function printList() {
-  var table = new Table({
+  var colWidths, table;
+
+  if(program.elliptic){
+    // we're going to need a bigger table!
+    colWidths = [30, 50, 10, 40, 20];
+  } else{
+    colWidths = [30, 50, 10, 30, 20];
+  }
+  table = new Table({
     head: ['Username', 'Url', 'Count', 'Type(s)', 'Size(s)'],
-    colWidths: [30, 50, 10, 30, 20]
+    colWidths: colWidths
   });
 
   for (var user in userList) {
@@ -125,6 +135,11 @@ function addKeys(callback) {
           return keyTypes.indexOf(item) == pos;
         });
 
+        if(program.elliptic && keyTypes.filter(function(n) {return ellipticKeyTypes.indexOf(n) != -1}).length == 0){
+          // intersect the keyTypes for the user and the ellipticKeyTypes; if the intersected array is empty, they don't have an eliptic key
+          userList[this.user].keyTypes.push(chalk.bgRed.bold("No eliptic keys"));
+        }
+
         // deduplicate keybits
         userList[this.user].keyBits = keyBits.filter(function(item, pos) {
           return keyBits.indexOf(item) == pos;
@@ -159,7 +174,7 @@ function listOrgs() {
 function buildUserList(err, resultsPage, callback, callback2) {
   handleErrorIfOccurs(err);
 
-  // root case
+  // initial case; this is our first call
   if (resultsPage == null) {
     return github.orgs.getMembers({
       org: program.organization
