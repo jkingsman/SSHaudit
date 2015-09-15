@@ -103,7 +103,6 @@ function addKeys(callback) {
         var keyCount = 0;
         var keyTypes = [];
         var keyBits = [];
-        var newKey;
 
         for (var i = 0; i < keylist.length; i++) {
           keyCount++;
@@ -184,7 +183,7 @@ function buildUserList(err, resultsPage, callback, callback2) {
   }
 
   resultsPage.forEach(function(user) {
-    userObj = {
+    var userObj = {
       url: user.html_url
     };
 
