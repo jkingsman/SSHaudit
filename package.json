@@ -1,7 +1,7 @@
 {
   "name": "SSHaudit",
   "version": "0.1.0",
-  "description": "Audit the keys of users in your organization.",
+  "description": "Audit your GitHub organization members' SSH keys for length and type.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
