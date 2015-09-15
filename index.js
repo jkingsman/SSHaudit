@@ -52,12 +52,7 @@ function handleErrorIfOccurs(err) {
 var github = new GitHubApi({
     version: '3.0.0',
     // debug: true,
-    protocol: 'https',
-    host: 'api.github.com', // should be api.github.com for GitHub
-    timeout: 5000,
-    headers: {
-        'user-agent': 'shuadit' // GitHub is happy with a unique user agent
-    }
+    protocol: 'https'
 });
 
 github.authenticate({
@@ -133,8 +128,8 @@ function addKeys(callback) {
                     keyTypes.push(gitKey.getKeyType());
 
                     // don't run the key length if it's not RSA or DSA
-                    if (gitKey.getKeyType() === 'ssh-rsa' || gitKey.getKeyType() ===
-                        'ssh-dsa' || gitKey.getKeyType() === 'ssh-dss') {
+                    if (gitKey.getKeyType() === 'ssh-rsa' || gitKey.getKeyType() === 'ssh-dsa'
+                     || gitKey.getKeyType() === 'ssh-dss') {
                         if (gitKey.getKeyLength() <= program.size) {
                             keyBits.push(chalk.bgRed.bold(gitKey.getKeyLength()));
                         } else {
@@ -151,17 +146,16 @@ function addKeys(callback) {
                 }
 
                 // deduplicate keytypes
-                userList[this.user].keyTypes = keyTypes.filter(function(
-                    item, pos) {
+                userList[this.user].keyTypes = keyTypes.filter(function(item, pos) {
                     return keyTypes.indexOf(item) === pos;
                 });
 
-                if (program.elliptic && keyTypes.filter(function(n) {
-                        return ellipticKeyTypes.indexOf(n) !== -1;
-                    }).length === 0) {
-                    // intersect the keyTypes for the user and the ellipticKeyTypes; if the intersected array is empty, they don't have an eliptic key
+                if (program.elliptic &&
+                    keyTypes.filter(function(n) {return ellipticKeyTypes.indexOf(n) !== -1;}).length === 0) {
+                    // intersect the keyTypes for the user and the ellipticKeyTypes;
+                    // if the intersected array is empty, they don't have an elliptic key
                     userList[this.user].keyTypes.push(chalk.bgRed.bold(
-                        'No eliptic keys'));
+                        'No elliptic keys'));
                 }
 
                 // deduplicate keybits
