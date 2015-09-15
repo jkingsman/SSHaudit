@@ -70,7 +70,7 @@ if (!program.organization) {
     // not provided an org; list current ones
     listOrgs();
 } else {
-    console.log('Loading users; please wait...');
+    console.log('Loading users; please wait... (this may take a while for large organizations)');
     buildUserList(false, null, addKeys, printList);
 }
 
@@ -100,6 +100,13 @@ function printList() {
     }
 
     console.log(table.toString());
+    github.misc.rateLimit({}, function(err, ratelimit) {
+        handleErrorIfOccurs(err);
+        var percentageUsed = Math.round((ratelimit.resources.core.limit - ratelimit.resources.core.remaining) / ratelimit.resources.core.limit * 1000, 2) / 10;
+        var resetDate = new Date(parseInt(ratelimit.resources.core.reset + '000', 10)); // ghetto, I know
+        var formattedResetDate = resetDate.toISOString().replace(/T/, ' ').replace(/\..+/, '');
+        console.log('You have used ' + percentageUsed + '% of your GitHub API requests (resets on ' + formattedResetDate + ' )');
+    });
 }
 
 /**
