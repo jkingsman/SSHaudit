@@ -78,17 +78,8 @@ if (!program.organization) {
  * Prints the user list in table form
  */
 function printList() {
-    var colWidths, table;
-
-    if (program.elliptic) {
-        // we're going to need a bigger table!
-        colWidths = [30, 50, 10, 40, 20];
-    } else {
-        colWidths = [30, 50, 10, 30, 20];
-    }
-    table = new Table({
-        head: ['Username', 'Url', 'Count', 'Type(s)', 'Size(s)'],
-        colWidths: colWidths
+    var table = new Table({
+        head: ['Username', 'Url', 'Count', 'Type(s)', 'Size(s)']
     });
 
     for (var user in userList) {
