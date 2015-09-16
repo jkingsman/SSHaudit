@@ -43,11 +43,11 @@ Omitting the organization name will list all organizations you're a member of.
 
 `-e, --elliptic`
 
-* Flag users lacking elliptic keys (no flagging by default)
+* Users lacking elliptic keys will be flagged (disabled by default)
 
 `-f, --flaggedonly`
 
-* Only display users who are flagged according to the previous rules
+* Only display users who are flagged according to the previous rules (default displays all users)
 
 ## License
 
