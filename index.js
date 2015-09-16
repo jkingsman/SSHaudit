@@ -75,7 +75,9 @@ if (!program.organization) {
     // not provided an org; list current ones
     listOrgs();
 } else {
-    console.log('Loading users; please wait... (this may take a while for large organizations)');
+    console.log(
+        'Loading users; please wait... (this may take a while for large organizations)'
+    );
     buildUserList(false, null, addKeys, printList);
 }
 
@@ -88,7 +90,8 @@ function printList() {
     });
 
     for (var user in userList) {
-        if ((userList.hasOwnProperty(user) && !program.flaggedonly) || (userList.hasOwnProperty(user) && userList[user].isFlagged)) {
+        if ((userList.hasOwnProperty(user) && !program.flaggedonly) || (
+                userList.hasOwnProperty(user) && userList[user].isFlagged)) {
             /* K-map reduction of this:
              *      A	B	C	Y
              *    0	0	0	0	0
@@ -103,7 +106,8 @@ function printList() {
              *  C = program.flaggedonly, Y = should show entry
              */
             table.push([userList[user].realName, user, userList[user].keyCount,
-                userList[user].keyTypes.join(', '), userList[user].keyBits.join(', ')
+                userList[user].keyTypes.join(', '), userList[user].keyBits
+                .join(', ')
             ]);
         }
     }
@@ -111,10 +115,16 @@ function printList() {
     console.log(table.toString());
     github.misc.rateLimit({}, function(err, ratelimit) {
         handleErrorIfOccurs(err);
-        var percentageUsed = Math.round((ratelimit.resources.core.limit - ratelimit.resources.core.remaining) / ratelimit.resources.core.limit * 1000, 2) / 10;
-        var resetDate = new Date(parseInt(ratelimit.resources.core.reset + '000', 10)); // ghetto, I know
-        var formattedResetDate = resetDate.toISOString().replace(/T/, ' ').replace(/\..+/, '');
-        console.log('You have used ' + percentageUsed + '% of your GitHub API requests (resets on ' + formattedResetDate + ' )');
+        var percentageUsed = Math.round((ratelimit.resources.core.limit -
+                ratelimit.resources.core.remaining) / ratelimit.resources
+            .core.limit * 1000, 2) / 10;
+        var resetDate = new Date(parseInt(ratelimit.resources.core.reset +
+            '000', 10)); // ghetto, I know
+        var formattedResetDate = resetDate.toISOString().replace(/T/,
+            ' ').replace(/\..+/, '');
+        console.log('You have used ' + percentageUsed +
+            '% of your GitHub API requests (resets on ' +
+            formattedResetDate + ' )');
     });
 }
 
@@ -146,8 +156,8 @@ function addKeys(callback) {
                     userList[this.user].isFlagged = false;
 
                     // don't run the key length if it's not RSA or DSA
-                    if (gitKey.getKeyType() === 'ssh-rsa' || gitKey.getKeyType() === 'ssh-dsa'
-                     || gitKey.getKeyType() === 'ssh-dss') {
+                    if (gitKey.getKeyType() === 'ssh-rsa' || gitKey.getKeyType() ===
+                        'ssh-dsa' || gitKey.getKeyType() === 'ssh-dss') {
                         if (gitKey.getKeyLength() <= program.size) {
                             keyBits.push(chalk.bgRed.bold(gitKey.getKeyLength()));
                             userList[this.user].isFlagged = true;
@@ -166,12 +176,15 @@ function addKeys(callback) {
                 }
 
                 // deduplicate keytypes
-                userList[this.user].keyTypes = keyTypes.filter(function(item, pos) {
+                userList[this.user].keyTypes = keyTypes.filter(function(
+                    item, pos) {
                     return keyTypes.indexOf(item) === pos;
                 });
 
                 if (program.elliptic &&
-                    keyTypes.filter(function(n) {return ellipticKeyTypes.indexOf(n) !== -1;}).length === 0) {
+                    keyTypes.filter(function(n) {
+                        return ellipticKeyTypes.indexOf(n) !== -1;
+                    }).length === 0) {
                     // intersect the keyTypes for the user and the ellipticKeyTypes;
                     // if the intersected array is empty, they don't have an elliptic key
                     userList[this.user].keyTypes.push(chalk.bgRed.bold(
@@ -249,18 +262,21 @@ function buildUserList(error, resultsPage, callback, callback2) {
         }, function(err, userData) {
             handleErrorIfOccurs(err);
 
-            userList[user.login].realName = userData.name || '[none]';
+            userList[user.login].realName = userData.name ||
+                '[none]';
 
             resultsCount--;
-            if(resultsCount == 0){
+            if (resultsCount === 0) {
                 if (github.hasNextPage(resultsPage)) {
-                    github.getNextPage(resultsPage, function(err, res) {
-                        buildUserList(err, res, callback, callback2);
+                    github.getNextPage(resultsPage, function(
+                        subErr, res) {
+                        buildUserList(subErr, res,
+                            callback, callback2);
                     });
                 } else {
                     callback(callback2);
                 }
-              }
-          });
+            }
+        });
     });
 }
