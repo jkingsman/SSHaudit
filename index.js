@@ -24,8 +24,13 @@ program
     .option('-s, --size [keysize]',
         'Keys smaller than this keysize in bits will be flagged (default = 1024; elliptic keys will not have their lengths displayed irrespective of this setting)',
         1024)
+    .option('-c, --count [number]',
+        'Users with fewer than this number of keys will be flagged (default = 1))',
+        1)
     .option('-e, --elliptic',
         'Flag users lacking elliptic keys (no flagging by default)')
+    .option('-f, --flaggedonly',
+        'Only display users who are flagged according to the previous rules')
     .parse(process.argv);
 
 if (!program.token) {
@@ -83,7 +88,20 @@ function printList() {
     });
 
     for (var user in userList) {
-        if (userList.hasOwnProperty(user)) {
+        if ((userList.hasOwnProperty(user) && !program.flaggedonly) || (userList.hasOwnProperty(user) && userList[user].isFlagged)) {
+            /* K-map reduction of this:
+             *      A	B	C	Y
+             *    0	0	0	0	0
+             *    1	0	0	1	0
+             *    2	0	1	0	0
+             *    3	0	1	1	0
+             *    4	1	0	0	1
+             *    5	1	0	1	0
+             *    6	1	1	0	1
+             *    7	1	1	1	1
+             *  where A = hasOwnProperty, B = userList[user].isFlagged,
+             *  C = program.flaggedonly, Y = should show entry
+             */
             table.push([userList[user].realName, user, userList[user].keyCount,
                 userList[user].keyTypes.join(', '), userList[user].keyBits.join(', ')
             ]);
@@ -125,20 +143,24 @@ function addKeys(callback) {
 
                     keyTypes.push(gitKey.getKeyType());
 
+                    userList[this.user].isFlagged = false;
+
                     // don't run the key length if it's not RSA or DSA
                     if (gitKey.getKeyType() === 'ssh-rsa' || gitKey.getKeyType() === 'ssh-dsa'
                      || gitKey.getKeyType() === 'ssh-dss') {
                         if (gitKey.getKeyLength() <= program.size) {
                             keyBits.push(chalk.bgRed.bold(gitKey.getKeyLength()));
+                            userList[this.user].isFlagged = true;
                         } else {
                             keyBits.push(gitKey.getKeyLength());
                         }
                     }
                 }
 
-                if (keyCount === 0) {
+                if (keyCount < program.count) {
                     userList[this.user].keyCount = chalk.bgRed.bold(
                         keyCount);
+                    userList[this.user].isFlagged = true;
                 } else {
                     userList[this.user].keyCount = keyCount;
                 }
@@ -154,6 +176,7 @@ function addKeys(callback) {
                     // if the intersected array is empty, they don't have an elliptic key
                     userList[this.user].keyTypes.push(chalk.bgRed.bold(
                         'No elliptic keys'));
+                    userList[this.user].isFlagged = true;
                 }
 
                 // deduplicate keybits
