@@ -1,6 +1,6 @@
 # SSHaudit
 
-Audit your GitHub organization members' SSH keys for length and type.
+Audit your GitHub organization members' SSH keys for size, count, and type.
 
 ```bash
 node index.js -t <GitHub personal token> -o <organization name>
