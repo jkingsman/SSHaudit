@@ -5,9 +5,6 @@ Audit your GitHub organization members' SSH keys for length and type.
 ```bash
 node index.js -t <GitHub personal token> -o <organization name>
 ```
-
-Output:
-
 ![Output Screenshot](https://raw.githubusercontent.com/jkingsman/SSHaudit/master/screenshot.png)
 
 ## Installation
