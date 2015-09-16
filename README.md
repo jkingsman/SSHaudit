@@ -36,17 +36,21 @@ Omitting the organization name will list all organizations you're a member of.
 
 ### Options
 
-#### -s, --size [keysize]`
-Keys smaller than `keysize` in bits will be flagged (default = 1024)
+`-s, --size [keysize]`
 
-### `-c, --count [number]`
-Users with fewer than `number` keys will be flagged (default = 1)
+* Keys smaller than `keysize` in bits will be flagged (default = 1024)
 
-### `-e, --elliptic`
-Flag users lacking elliptic keys (no flagging by default)
+`-c, --count [number]`
 
-### `-f, --flaggedonly`
-Only display users who are flagged according to the previous rules
+* Users with fewer than `number` keys will be flagged (default = 1)
+
+`-e, --elliptic`
+
+* Flag users lacking elliptic keys (no flagging by default)
+
+`-f, --flaggedonly`
+
+* Only display users who are flagged according to the previous rules
 
 ## License
 
