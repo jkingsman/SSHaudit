@@ -79,12 +79,12 @@ if (!program.organization) {
  */
 function printList() {
     var table = new Table({
-        head: ['Username', 'Url', 'Count', 'Type(s)', 'Size(s)']
+        head: ['Name', 'Username', 'Count', 'Type(s)', 'Size(s)']
     });
 
     for (var user in userList) {
         if (userList.hasOwnProperty(user)) {
-            table.push([user, userList[user].url, userList[user].keyCount,
+            table.push([userList[user].realName, user, userList[user].keyCount,
                 userList[user].keyTypes.join(', '), userList[user].keyBits.join(', ')
             ]);
         }
@@ -212,19 +212,32 @@ function buildUserList(error, resultsPage, callback, callback2) {
         });
     }
 
+    var resultsCount = resultsPage.length;
+
     resultsPage.forEach(function(user) {
         var userObj = {
             url: user.html_url
         };
 
         userList[user.login] = userObj;
-    });
 
-    if (github.hasNextPage(resultsPage)) {
-        github.getNextPage(resultsPage, function(err, res) {
-            buildUserList(err, res, callback, callback2);
-        });
-    } else {
-        callback(callback2);
-    }
+        return github.user.getFrom({
+            user: user.login
+        }, function(err, userData) {
+            handleErrorIfOccurs(err);
+
+            userList[user.login].realName = userData.name || '[none]';
+
+            resultsCount--;
+            if(resultsCount == 0){
+                if (github.hasNextPage(resultsPage)) {
+                    github.getNextPage(resultsPage, function(err, res) {
+                        buildUserList(err, res, callback, callback2);
+                    });
+                } else {
+                    callback(callback2);
+                }
+              }
+          });
+    });
 }
