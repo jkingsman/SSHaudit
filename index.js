@@ -158,7 +158,7 @@ function addKeys(callback) {
                     // don't run the key length if it's not RSA or DSA
                     if (gitKey.getKeyType() === 'ssh-rsa' || gitKey.getKeyType() ===
                         'ssh-dsa' || gitKey.getKeyType() === 'ssh-dss') {
-                        if (gitKey.getKeyLength() <= program.size) {
+                        if (gitKey.getKeyLength() < program.size) {
                             keyBits.push(chalk.bgRed.bold(gitKey.getKeyLength()));
                             userList[this.user].isFlagged = true;
                         } else {
