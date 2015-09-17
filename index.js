@@ -93,8 +93,8 @@ function printList() {
         if ((userList.hasOwnProperty(user) && !program.flaggedonly) || (
                 userList.hasOwnProperty(user) && userList[user].isFlagged)) {
             /* K-map reduction of this:
-             *      A	B	C	Y
-             *      0	0	0	0
+             *    	A	B	C	Y
+             *    	0	0	0	0
              *    	0	0	1	0
              *    	0	1	0	0
              *    	0	1	1	0
